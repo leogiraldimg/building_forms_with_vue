@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Payment</h3>
-    <form novalidate>
+    <form novalidate @submit.prevent="onSave">
       <div class="row">
         <div class="col-md-6">
           <div><strong>Shipping Information</strong></div>
@@ -108,9 +108,14 @@ export default {
       postalCode: "12345",
     });
 
+    function onSave() {
+      alert("We can't save yet");
+    }
+
     return {
       payment,
       states,
+      onSave
     };
   },
 };
