@@ -164,6 +164,55 @@
               />
             </div>
           </div>
+          <div><strong>Credit Card</strong></div>
+          <div class="form-group">
+            <label for="ccNumber">Credit Card Number</label>
+            <input
+              type="text"
+              class="form-control"
+              v-model="payment.creditcard.number"
+              id="ccNumber"
+            />
+          </div>
+          <div class="form-group">
+            <label for="nameOnCard">Name on Card</label>
+            <input
+              type="text"
+              class="form-control"
+              v-model="payment.creditcard.nameOnCard"
+              id="nameOnCard"
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="expirationMonth">Expiration Month</label>
+              <select
+                v-model="payment.creditcard.expirationMonth"
+                class="form-control"
+              >
+                <option v-for="m in months" :key="m.number" :value="m.number">{{
+                  m.name
+                }}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="expirationYear">Expiration Year</label>
+              <select
+                v-model="payment.creditcard.expirationYear"
+                class="form-control"
+              >
+                <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="cvv">CVV Code</label>
+              <input
+                v-model="payment.creditcard.cvv"
+                class="form-control"
+                id="cvv"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </form>
@@ -176,6 +225,7 @@
 <script>
 import { ref, computed, watch } from "vue";
 import states from "@/lookup/states";
+import months from "@/lookup/months";
 import formatters from "@/formatters";
 
 export default {
@@ -188,6 +238,7 @@ export default {
       billing: {
         sameAsShipping: false,
       },
+      creditcard: {},
     });
 
     const error = ref("");
@@ -226,6 +277,8 @@ export default {
       }
     );
 
+    const years = Array.from({ length: 10 }, (_, i) => i + 2020);
+
     return {
       payment,
       states,
@@ -233,6 +286,8 @@ export default {
       ...formatters,
       zipcode,
       error,
+      months,
+      years,
     };
   },
 };
