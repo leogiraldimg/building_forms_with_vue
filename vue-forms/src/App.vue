@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import PaymentView from '@/views/PaymentView';
+import PaymentView from "@/views/PaymentView";
 
 export default {
   components: {
-    PaymentView
-  }
-}
+    PaymentView,
+  },
+};
 </script>
