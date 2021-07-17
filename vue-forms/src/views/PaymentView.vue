@@ -1,7 +1,6 @@
 <template>
   <div>
     <h3>Payment</h3>
-    <Error :message="error" />
     <form novalidate @submit.prevent="onSave">
       <div class="row">
         <div class="col-md-6">
@@ -34,7 +33,10 @@
         </div>
         <div class="col-md-6">
           <div><strong>Billing Information</strong></div>
-          <AddressView :address="payment.billing" :isDisabled="payment.billing.sameAsShipping">
+          <AddressView
+            :address="payment.billing"
+            :isDisabled="payment.billing.sameAsShipping"
+          >
             <div class="form-check">
               <input
                 type="checkbox"
@@ -110,15 +112,16 @@ import { ref, computed, watch } from "vue";
 import states from "@/lookup/states";
 import months from "@/lookup/months";
 import formatters from "@/formatters";
-import Error from "@/components/Error.vue";
 import AddressView from "./AddressView";
 
 export default {
   components: {
-    Error,
     AddressView,
   },
-  setup() {
+  emits: [
+    "onError"
+  ],
+  setup(props, { emit }) {
     const payment = ref({
       shipping: {
         fullName: "Shawn",
@@ -130,10 +133,8 @@ export default {
       creditcard: {},
     });
 
-    const error = ref("");
-
     function onSave() {
-      error.value = "We can't save yet, we don't have an API";
+      emit("onError", "We can't save yet, we don't have an API");
     }
 
     const zipcode = computed({
@@ -174,7 +175,6 @@ export default {
       onSave,
       ...formatters,
       zipcode,
-      error,
       months,
       years,
     };
