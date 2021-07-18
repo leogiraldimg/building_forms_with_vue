@@ -55,7 +55,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="payment.creditcard.number"
+              v-model="creditCardModel.number.$model"
               id="ccNumber"
             />
           </div>
@@ -64,7 +64,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="payment.creditcard.nameOnCard"
+              v-model="creditCardModel.nameOnCard.$model"
               id="nameOnCard"
             />
           </div>
@@ -72,7 +72,7 @@
             <div class="form-group col-md-4">
               <label for="expirationMonth">Expiration Month</label>
               <select
-                v-model="payment.creditcard.expirationMonth"
+                v-model="creditCardModel.expirationMonth.$model"
                 class="form-control"
               >
                 <option v-for="m in months" :key="m.number" :value="m.number">{{
@@ -83,7 +83,7 @@
             <div class="form-group col-md-4">
               <label for="expirationYear">Expiration Year</label>
               <select
-                v-model="payment.creditcard.expirationYear"
+                v-model="creditCardModel.expirationYear.$model"
                 class="form-control"
               >
                 <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
@@ -92,10 +92,15 @@
             <div class="form-group col-md-4">
               <label for="cvv">CVV Code</label>
               <input
-                v-model="payment.creditcard.cvv"
+                v-model="creditCardModel.cvv.$model"
                 class="form-control"
                 id="cvv"
               />
+            </div>
+            <div class="text-danger" v-if="creditCardModel.$invalid">
+              <ul>
+                <li v-for="e in creditCardModel.$errors" :key="e">{{ `${e.$property}: ${e.$message}` }}</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -103,6 +108,7 @@
     </form>
     <div>
       <pre>{{ payment }}</pre>
+      <pre>{{ creditCardModel }}</pre>
     </div>
   </div>
 </template>
@@ -114,14 +120,14 @@ import months from "@/lookup/months";
 import formatters from "@/formatters";
 import AddressView from "./AddressView";
 import state from "@/state";
+import { required } from "@vuelidate/validators";
+import useVuelidate from '@vuelidate/core';
 
 export default {
   components: {
     AddressView,
   },
-  emits: [
-    "onError"
-  ],
+  emits: ["onError"],
   setup(props, { emit }) {
     const payment = reactive(state);
 
@@ -136,9 +142,7 @@ export default {
           if (val.length <= 5 || val.indexOf("-") > -1) {
             payment.postalCode = val;
           } else {
-            payment.postalCode = `${val.substring(0, 5)}-${val.substring(
-              5
-            )}`;
+            payment.postalCode = `${val.substring(0, 5)}-${val.substring(5)}`;
           }
         }
       },
@@ -157,8 +161,19 @@ export default {
 
     const years = Array.from({ length: 10 }, (_, i) => i + 2020);
 
+    const rules = {
+      number: { required },
+      nameOnCard: { required},
+      expirationMonth: { required },
+      expirationYear: { required },
+      cvv: { required },
+    };
+
+    const creditCardModel = useVuelidate(rules, state.creditcard);
+
     return {
       payment,
+      creditCardModel,
       states,
       onSave,
       ...formatters,
