@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { ref, computed, watch, reactive } from "vue";
+import { computed, watch, reactive } from "vue";
 import states from "@/lookup/states"; 
 import months from "@/lookup/months";
 import formatters from "@/formatters";
@@ -128,6 +128,7 @@ import state from "@/state";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import ValidationMessage from "@/components/ValidationMessage";
+import { creditcard } from "@/validators";
 
 export default {
   components: {
@@ -171,7 +172,7 @@ export default {
     const years = Array.from({ length: 10 }, (_, i) => i + 2020);
 
     const rules = {
-      number: { required },
+      number: { required, creditcard },
       nameOnCard: { required },
       expirationMonth: { required },
       expirationYear: { required },
